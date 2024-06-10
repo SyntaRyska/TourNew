@@ -1,11 +1,12 @@
 package kg.syntaryska.tourservicemaster.controllers;
 
+import kg.syntaryska.tourservicemaster.api_messages.ErrorMessage;
+import kg.syntaryska.tourservicemaster.exceptions.TourExceptions;
 import kg.syntaryska.tourservicemaster.models.entities.Tour;
 import kg.syntaryska.tourservicemaster.models.dtos.TourDto;
 import kg.syntaryska.tourservicemaster.services.TourService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,54 +22,52 @@ public class TourController {
     }
 
     @GetMapping("/getAll")
-    public ResponseEntity<List<Tour>> getAllTours() {
-        List<Tour> tourList = tourService.getAllTours();
-
-        if (tourList.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(tourList);
-        } else {
-            return ResponseEntity.status(HttpStatus.OK).body(tourList);
+    public ResponseEntity<?> getAllTours() {
+        try {
+            List<Tour> tours = tourService.getAllTours();
+            return new ResponseEntity<>(tours, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(ErrorMessage.TOUR_CREATION_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @GetMapping("/getById/{id}")
     public ResponseEntity<Tour> getTourById(@PathVariable Long id) {
-        Tour tour = tourService.getTourById(id);
-
-        if (tour == null) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        } else {
-            return ResponseEntity.status(HttpStatus.OK).body(tour);
+        Tour list = tourService.getTourById(id);
+        if (list == null){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
-
     @PostMapping("/create")
-    public ResponseEntity<?> createTour(@Validated @RequestBody TourDto tourDto) {
+    public ResponseEntity<?> createTour(@RequestBody TourDto tourDto) {
         try {
             Tour tour = tourService.createTour(tourDto);
-            return ResponseEntity.status(HttpStatus.CREATED).body(tour);
+            return new ResponseEntity<>(tour, HttpStatus.CREATED);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error creating tour: " + e.getMessage());
+            return new ResponseEntity<>(ErrorMessage.TOUR_CREATION_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
 
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateTour(@PathVariable Long id, @RequestBody TourDto tourDto) {
-        Tour updatedTour = tourService.updateTour(id, tourDto);
-
-        if (updatedTour == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No,found tour with id: ");
+        try {
+            Tour tour = tourService.updateTour(id, tourDto);
+            return new ResponseEntity<>(tour, HttpStatus.OK);
+        } catch (TourExceptions e) {
+            return new ResponseEntity<>(ErrorMessage.TOUR_UPDATE_ERROR + id, HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(ErrorMessage.TOUR_CREATION_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return ResponseEntity.status(HttpStatus.OK).body(updatedTour);
     }
+
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteTour(@PathVariable Long id) {
         Tour tour = tourService.getTourById(id);
-
         if (tour == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No this id is null");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         tourService.deleteTour(id);
         return ResponseEntity.ok("Tour with id " + id + " deleted successfully");

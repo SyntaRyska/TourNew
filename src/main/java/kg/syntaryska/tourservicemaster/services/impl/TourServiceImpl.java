@@ -8,7 +8,7 @@ import kg.syntaryska.tourservicemaster.services.TourService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 public class TourServiceImpl implements TourService {
@@ -21,39 +21,34 @@ public class TourServiceImpl implements TourService {
 
     @Override
     public List<Tour> getAllTours() {
-        return tourRepository.findAll().stream()
-                .filter(tour -> tour.getCountry().equalsIgnoreCase("Кыргызстан"))
-                .collect(Collectors.toList());
+        return tourRepository.findAll();
     }
 
     @Override
     public Tour getTourById(Long id) {
-        return tourRepository.findById(id).orElseThrow(() -> new TourExceptions("This tour id is not found"));
+        Optional<Tour> idSave = tourRepository.findById(id);
+        return idSave.orElseThrow(null);
     }
 
     @Override
     public Tour createTour(TourDto tourDto) {
-        Tour tour = new Tour();
-        tour.setTitle(tourDto.title());
-        tour.setDescription(tourDto.description());
-        tour.setCountry(tourDto.country());
-        tour.setDuration(tourDto.duration());
-        tour.setPrice(tourDto.price());
-        tour.setDateTour(tourDto.dateTour());
-
+        Tour tour = tourDto.convertToEntity();
         return tourRepository.save(tour);
     }
 
     @Override
     public Tour updateTour(Long id, TourDto tourDto) {
-        Tour tourZip = tourRepository.findById(id).orElseThrow(() -> new TourExceptions("Error please check tour id " + id));
+        Tour tourZip = tourRepository.findById(id)
+                .orElseThrow(() -> new TourExceptions("Error please check tour id " + id));
 
+        // Обновление свойств существующего объекта
         tourZip.setTitle(tourDto.title());
         tourZip.setDescription(tourDto.description());
         tourZip.setCountry(tourDto.country());
         tourZip.setDuration(tourDto.duration());
         tourZip.setPrice(tourDto.price());
         tourZip.setDateTour(tourDto.dateTour());
+
         return tourRepository.save(tourZip);
     }
 

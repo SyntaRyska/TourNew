@@ -31,7 +31,6 @@ public class BookingServiceImpl implements BookingService {
         if (tour == null) {
             throw new BookingExceptions("Error id is null");
         }
-
         Booking booking = new Booking();
         booking.setUserId(bookingDto.userId());
         booking.setTour(tour);
@@ -44,7 +43,6 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public List<Booking> getBookings(Long userId) {
         List<Booking> bookings = bookingRepository.findByUserId(userId);
-
         return bookings;
     }
 
