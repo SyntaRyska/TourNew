@@ -1,7 +1,7 @@
 package kg.syntaryska.tourservicemaster.services.impl;
 
 import kg.syntaryska.tourservicemaster.exceptions.TourExceptions;
-import kg.syntaryska.tourservicemaster.models.Tour;
+import kg.syntaryska.tourservicemaster.models.entities.Tour;
 import kg.syntaryska.tourservicemaster.models.dtos.TourDto;
 import kg.syntaryska.tourservicemaster.repository.TourRepository;
 import kg.syntaryska.tourservicemaster.services.TourService;

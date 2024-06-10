@@ -1,4 +1,4 @@
-package kg.syntaryska.tourservicemaster.models;
+package kg.syntaryska.tourservicemaster.models.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;

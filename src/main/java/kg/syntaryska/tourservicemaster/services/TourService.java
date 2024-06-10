@@ -1,6 +1,6 @@
 package kg.syntaryska.tourservicemaster.services;
 
-import kg.syntaryska.tourservicemaster.models.Tour;
+import kg.syntaryska.tourservicemaster.models.entities.Tour;
 import kg.syntaryska.tourservicemaster.models.dtos.TourDto;
 
 import java.util.List;

@@ -1,6 +1,6 @@
 package kg.syntaryska.tourservicemaster.controllers;
 
-import kg.syntaryska.tourservicemaster.models.Tour;
+import kg.syntaryska.tourservicemaster.models.entities.Tour;
 import kg.syntaryska.tourservicemaster.models.dtos.TourDto;
 import kg.syntaryska.tourservicemaster.services.TourService;
 import org.springframework.http.HttpStatus;
