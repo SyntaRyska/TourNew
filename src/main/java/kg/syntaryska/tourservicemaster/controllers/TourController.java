@@ -36,7 +36,7 @@ public class TourController {
         Tour tour = tourService.getTourById(id);
 
         if (tour == null) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(tour);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         } else {
             return ResponseEntity.status(HttpStatus.OK).body(tour);
         }
